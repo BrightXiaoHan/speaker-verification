@@ -1,0 +1,14 @@
+torch
+torchvision
+torchaudio
+flake8
+isort
+black
+ipdb
+pyannote.audio
+soundfile
+librosa
+fastapi
+uvicorn
+openpyxl
+pandas
