@@ -10,7 +10,7 @@ import soundfile as sf
 from pyannote.audio import Pipeline
 
 pipeline = Pipeline.from_pretrained(
-    "pyannote/speaker-diarization",
+    "params.yml",
     use_auth_token="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",
 )
 
