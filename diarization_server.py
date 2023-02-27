@@ -27,7 +27,7 @@ def score(enroll_audio_url, test_audio_url, sample_rate: int = 16000):
     test_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
     download_file(test_audio_url, test_audio_file)
 
-    same = varify(test_audio_file.name, enroll_audio_file.name, bidirectional=True)
+    same = varify(test_audio_file.name, enroll_audio_file.name, bidirectional=False)
 
     enroll_audio_file.close()
     test_audio_file.close()
