@@ -7,7 +7,6 @@ import numpy as np
 import pandas
 import requests
 import soundfile as sf
-
 from pyannote.audio import Pipeline
 
 pipeline = Pipeline.from_pretrained(
@@ -46,7 +45,7 @@ def diarization(wav_file):
     return max_duration, total_duration
 
 
-def varify(audio_file_1, audio_file_2):
+def varify(audio_file_1, audio_file_2, bidirectional=True):
     joint_wav = tempfile.NamedTemporaryFile(suffix=".wav")
 
     max_duration = 0
@@ -56,6 +55,9 @@ def varify(audio_file_1, audio_file_2):
     max_duration += md
     total_duration += td
     rate1 = md / td
+
+    if not bidirectional:
+        return rate1 > 0.73
 
     join_wav_file([audio_file_2, audio_file_1], joint_wav.name)
     md, td = diarization(joint_wav.name)
