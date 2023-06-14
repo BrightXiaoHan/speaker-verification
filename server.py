@@ -54,20 +54,24 @@ def varify(audio_file_1, audio_file_2, sample_rate=16000):
 
 @app.post("/yuyispeech/vector/score")
 def score(enroll_audio_url, test_audio_url, sample_rate: int = 16000):
-    enroll_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
-    download_file(enroll_audio_url, enroll_audio_file)
-    test_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
-    download_file(test_audio_url, test_audio_file)
+    max_score = 0
+    enroll_audio_urls = enroll_audio_url.split("|")
+    for enroll_audio_url in enroll_audio_urls:
+        enroll_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
+        download_file(enroll_audio_url, enroll_audio_file)
+        test_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
+        download_file(test_audio_url, test_audio_file)
+        score = 1 - varify(test_audio_file.name, enroll_audio_file.name, sample_rate)
+        max_score = max(max_score, score)
+        enroll_audio_file.close()
+        test_audio_file.close()
 
-    score = varify(test_audio_file.name, enroll_audio_file.name, sample_rate)
-
-    enroll_audio_file.close()
-    test_audio_file.close()
+    print(enroll_audio_urls, test_audio_url, max_score)
     return {
         "success": True,
         "code": 200,
         "message": {"description": "success"},
-        "result": {"score": 1 - score},
+        "result": {"score": max_score},
     }
 
 

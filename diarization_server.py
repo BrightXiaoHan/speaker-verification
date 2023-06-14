@@ -22,12 +22,15 @@ def download_file(url, dest: TextIOWrapper):
 
 @app.post("/yuyispeech/vector/score")
 def score(enroll_audio_url, test_audio_url, sample_rate: int = 16000):
-    enroll_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
-    download_file(enroll_audio_url, enroll_audio_file)
-    test_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
-    download_file(test_audio_url, test_audio_file)
+    enroll_audio_urls = enroll_audio_url.split("|")
 
-    same = varify(test_audio_file.name, enroll_audio_file.name, bidirectional=False)
+    same = False
+    for enroll_audio_url in enroll_audio_urls:
+        enroll_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
+        download_file(enroll_audio_url, enroll_audio_file)
+        test_audio_file = tempfile.NamedTemporaryFile(suffix=".wav")
+        download_file(test_audio_url, test_audio_file)
+        same &= varify(test_audio_file.name, enroll_audio_file.name, bidirectional=False)
 
     enroll_audio_file.close()
     test_audio_file.close()
