@@ -27,6 +27,7 @@ RUN pip install --upgrade pip -i https://pypi.douban.com/simple  \
 
 # 下载模型
 ADD download_models.py .
+ADD cache /root/.cache
 RUN python3 download_models.py
 
 # 添加模型代码

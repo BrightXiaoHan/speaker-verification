@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.9
+ARG PYTHON_VERSION=3.8.16
 FROM python:${PYTHON_VERSION} as base
 
 RUN sed -i s@/deb.debian.org/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
@@ -27,6 +27,7 @@ RUN pip install --upgrade pip -i https://pypi.douban.com/simple  \
 
 # 下载模型
 ADD download_models.py .
+ADD cache /root/.cache
 RUN python3 download_models.py
 
 # 添加模型代码
