@@ -27,15 +27,13 @@ def embedding_function(audio_file: str, sample_rate: int = 16000):
 
 
 @app.post("/voiceprint/reasoning")
-def search(data: str = fastapi.Body(..., embed=True), sample_rate: int = fastapi.Body(..., embed=True)):
-    summary = vector_store.summary()
-
+def search(data: str = fastapi.Body(..., embed=True), sampling_rate: int = fastapi.Body(..., embed=True)):
     # decode base64 from data
     data = base64.b64decode(data)
     # save data to temp wav file
     with tempfile.NamedTemporaryFile(suffix=".wav") as temp_wav_file:
         temp_wav_file.write(data)
-        embedding = embedding_function(temp_wav_file.name, sample_rate)
+        embedding = embedding_function(temp_wav_file.name, sampling_rate)
         # search
         try:
             search_results = vector_store.search(embedding=embedding[0], k=5)
@@ -79,7 +77,7 @@ def delete(id: Union[str, List[str]] = fastapi.Body(..., embed=True)):
 def update(
     id: str = fastapi.Body(..., embed=True),
     name: str = fastapi.Body(..., embed=True),
-    sample_rate: int = fastapi.Body(..., embed=True),
+    sampling_rate: int = fastapi.Body(..., embed=True),
     data: str = fastapi.Body(..., embed=True),
 ):
     # decode base64 from data
@@ -87,7 +85,7 @@ def update(
     # save data to temp wav file
     with tempfile.NamedTemporaryFile(suffix=".wav") as temp_wav_file:
         temp_wav_file.write(data)
-        embedding = embedding_function(temp_wav_file.name, sample_rate)
+        embedding = embedding_function(temp_wav_file.name, sampling_rate)
         try:
             vector_store.delete(ids=[id])
         except ValueError:
@@ -100,7 +98,7 @@ def update(
                 {
                     "id": id,
                     "name": name,
-                    "sample_rate": sample_rate,
+                    "sample_rate": sampling_rate,
                 }
             ],
         )

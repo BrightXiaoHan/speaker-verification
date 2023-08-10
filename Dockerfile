@@ -22,13 +22,14 @@ WORKDIR ${SOURCE_DIR}
 
 # 安装Python依赖库
 ADD requirements.txt .
-RUN pip install --upgrade pip -i https://pypi.douban.com/simple  \
-  && pip --no-cache-dir install -r requirements.txt -i https://pypi.douban.com/simple
+RUN pip --no-cache-dir install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 下载模型
 ADD download_models.py .
 ADD cache /root/.cache
 RUN python3 download_models.py
+
+VOLUME /root/repo/vector_store
 
 # 添加模型代码
 ADD . .
