@@ -4,6 +4,7 @@ from typing import List, Union
 
 import fastapi
 import torch
+import uvicorn
 from deeplake.core.vectorstore.deeplake_vectorstore import VectorStore
 from pyannote.audio import Audio
 from pyannote.audio.pipelines.speaker_verification import PretrainedSpeakerEmbedding
@@ -108,3 +109,7 @@ def update(
         "code": 200,
         "msg": "success",
     }
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=80)
