@@ -13,10 +13,22 @@ model = PretrainedSpeakerEmbedding("speechbrain/spkrec-ecapa-voxceleb", device=t
 
 VECTOR_STORE_PATH = "vector_store"
 
+vector_store = None
+
+
 app = fastapi.FastAPI()
-vector_store = VectorStore(
-    path=VECTOR_STORE_PATH,
-)
+
+
+@app.on_event("startup")
+def startup_event():
+    global vector_store
+    vector_store = VectorStore(VECTOR_STORE_PATH)
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    global vector_store
+    pass
 
 
 def embedding_function(audio_file: str, sample_rate: int = 16000):

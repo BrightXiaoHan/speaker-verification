@@ -1,15 +1,21 @@
 import base64
 import glob
 
+import pytest
 from fastapi.testclient import TestClient
 
 from search_server import app
 
-client = TestClient(app)
 assets_folder = "assets"
 
 
-def test_search():
+@pytest.fixture(scope="module", autouse=True)
+def client():
+    with TestClient(app) as client:
+        yield client
+
+
+def test_search(client):
     for i, wav_file in enumerate(glob.glob(f"{assets_folder}/*.wav")):
         # base64 encode wav file
         with open(wav_file, "rb") as f:
@@ -60,7 +66,3 @@ def test_search():
         assert response.status_code == 200
         result = response.json()
         assert len(result["data"]) == 0 or result["data"][0]["id"] != f"test_id_{i}"
-
-
-if __name__ == "__main__":
-    test_search()
