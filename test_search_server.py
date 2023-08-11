@@ -17,7 +17,7 @@ def test_search():
 
         # send request
         response = client.post(
-            "/voiceprint/update", json={"id": f"test_id_{i}", "name": f"test_name_{i}", "data": data, "sample_rate": 16000}
+            "/voiceprint/update", json={"id": f"test_id_{i}", "name": f"test_name_{i}", "data": data, "sampling_rate": 16000}
         )
         assert response.status_code == 200
 
@@ -29,7 +29,7 @@ def test_search():
             "/voiceprint/reasoning",
             json={
                 "data": data,
-                "sample_rate": 16000,
+                "sampling_rate": 16000,
             },
         )
         assert response.status_code == 200
@@ -54,7 +54,7 @@ def test_search():
             "/voiceprint/reasoning",
             json={
                 "data": data,
-                "sample_rate": 16000,
+                "sampling_rate": 16000,
             },
         )
         assert response.status_code == 200
