@@ -1,46 +1,8 @@
-ARG PYTHON_VERSION=3.8.16
-FROM python:${PYTHON_VERSION} as base
+from pyannote:latest
 
-RUN sed -i s@/deb.debian.org/@/mirrors.aliyun.com/@g /etc/apt/sources.list \
-    && sed -i s@/security.debian.org/@/mirrors.aliyun.com/@g /etc/apt/sources.list
-
-# 将时区设置为上海
-ENV TZ=Asia/Shanghai \
-    DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update \
-    && apt-get install -y tzdata libsndfile1 \
-    && ln -fs /usr/share/zoneinfo/${TZ} /etc/localtime \
-    && echo ${TZ} > /etc/timezone \
-    && dpkg-reconfigure --frontend noninteractive tzdata \
-    && rm -rf /var/lib/apt/lists/*
-
-
-ARG SOURCE_DIR=/root/repo
-# 安装Python依赖库
-WORKDIR ${SOURCE_DIR}
-
-# 安装Python依赖库
-ADD requirements.txt .
-RUN pip install --upgrade pip -i https://pypi.douban.com/simple  \
-  && pip --no-cache-dir install -r requirements.txt -i https://pypi.douban.com/simple
-
-# 下载模型
-ADD download_models.py .
-ADD cache /root/.cache
-RUN python3 download_models.py
-
-# 添加模型代码
-ADD . .
-
-ARG EXPIRED_DATE=2026-09-30
-RUN pip --no-cache-dir install -i https://pypi.douban.com/simple 'pyarmor>=7.7.4, <8.0' \
+ARG EXPIRED_DATE=2030-09-30
+RUN pip --no-cache-dir install -i https://pypi.tuna.tsinghua.edu.cn/simple 'pyarmor>=7.7.4, <8.0' \
   && pyarmor licenses --expired ${EXPIRED_DATE} r001 \
   && pyarmor obfuscate --recursive --output=/root/obfuscate --with-license licenses/r001/license.lic server.py \
   && rm -rf /root/repo
 WORKDIR /root/obfuscate
-
-EXPOSE 80
-ENTRYPOINT ["python3"]
-CMD ["server.py"]
-
